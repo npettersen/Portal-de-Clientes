@@ -1,0 +1,1572 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, inihtial-scale=1.0">
+<title>SAAM Towage — Portal de Clientes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+  :root {
+    --bg: #f7f6f3;
+    --surface: #ffffff;
+    --surface2: #f0efe9;
+    --border: rgba(0,0,0,0.08);
+    --border-md: rgba(0,0,0,0.13);
+    --text: #1a1917;
+    --text2: #6b6a65;
+    --text3: #9d9c97;
+    --accent: #0f6e56;
+    --accent-light: #e1f5ee;
+    --accent-text: #085041;
+    --warn: #854f0b;
+    --warn-light: #faeeda;
+    --danger: #a32d2d;
+    --danger-light: #fcebeb;
+    --info: #185fa5;
+    --info-light: #e6f1fb;
+    --purple-light: #eeedfe;
+    --purple-text: #3c3489;
+    --nav-h: 52px;
+    --sidebar-w: 220px;
+    --radius: 10px;
+    --radius-sm: 6px;
+    --font: 'DM Sans', sans-serif;
+    --mono: 'DM Mono', monospace;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--text);
+    font-size: 13px;
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+
+  /* ── TOPBAR ── */
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    height: var(--nav-h);
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 24px;
+  }
+  .topbar-left { display: flex; align-items: center; gap: 14px; }
+  .logo-mark {
+    width: 30px; height: 30px; border-radius: 8px;
+    background: var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .logo-mark i { font-size: 16px; color: #fff; }
+  .logo-name { font-size: 14px; font-weight: 500; letter-spacing: -0.01em; }
+  .logo-sep { width: 1px; height: 18px; background: var(--border-md); }
+  .client-pill {
+    display: flex; align-items: center; gap: 6px;
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 20px; padding: 3px 12px 3px 8px;
+    font-size: 12px; color: var(--text2); cursor: pointer;
+  }
+  .client-pill i { font-size: 14px; color: var(--accent); }
+  .topbar-right { display: flex; align-items: center; gap: 6px; }
+  .icon-btn {
+    width: 32px; height: 32px; border-radius: var(--radius-sm);
+    background: transparent; border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--text2); transition: background 0.15s;
+    position: relative;
+  }
+  .icon-btn:hover { background: var(--surface2); }
+  .icon-btn i { font-size: 17px; }
+  .notif-dot {
+    position: absolute; top: 5px; right: 5px;
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--danger); border: 1.5px solid var(--surface);
+  }
+  .avatar {
+    width: 30px; height: 30px; border-radius: 50%;
+    background: var(--info-light);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 500; color: var(--info);
+    cursor: pointer; border: 1px solid var(--border);
+  }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    position: fixed; top: var(--nav-h); left: 0; bottom: 0;
+    width: var(--sidebar-w);
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    padding: 16px 10px;
+    overflow-y: auto;
+    display: flex; flex-direction: column; gap: 2px;
+  }
+  .sidebar-section {
+    font-size: 10px; font-weight: 500; color: var(--text3);
+    letter-spacing: 0.06em; text-transform: uppercase;
+    padding: 10px 10px 4px;
+  }
+  .nav-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 7px 10px; border-radius: var(--radius-sm);
+    cursor: pointer; color: var(--text2);
+    border: none; background: transparent; width: 100%;
+    text-align: left; font-size: 13px; font-family: var(--font);
+    transition: all 0.12s;
+  }
+  .nav-item:hover { background: var(--surface2); color: var(--text); }
+  .nav-item.active {
+    background: var(--accent-light); color: var(--accent-text);
+    font-weight: 500;
+  }
+  .nav-item i { font-size: 16px; flex-shrink: 0; }
+  .nav-badge {
+    margin-left: auto; font-size: 10px; padding: 1px 6px;
+    border-radius: 8px; font-weight: 500;
+  }
+  .nb-red { background: var(--danger-light); color: var(--danger); }
+  .nb-amber { background: var(--warn-light); color: var(--warn); }
+  .sidebar-footer {
+    margin-top: auto; padding-top: 12px;
+    border-top: 1px solid var(--border);
+  }
+
+  /* ── MAIN ── */
+  .main {
+    margin-left: var(--sidebar-w);
+    margin-top: var(--nav-h);
+    padding: 20px 24px;
+    min-height: calc(100vh - var(--nav-h));
+  }
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* ── PAGE HEADER ── */
+  .page-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 14px;
+  }
+  .page-title { font-size: 18px; font-weight: 500; letter-spacing: -0.02em; }
+  .page-sub { font-size: 11px; color: var(--text3); margin-top: 1px; display: flex; align-items: center; gap: 6px; }
+  .live-dot { width: 6px; height: 6px; border-radius: 50%; background: #22c55e; display: inline-block; }
+  .header-actions { display: flex; gap: 8px; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 12px; border-radius: var(--radius-sm);
+    font-size: 12px; font-family: var(--font); cursor: pointer;
+    border: 1px solid var(--border-md); background: var(--surface);
+    color: var(--text2); transition: all 0.12s; font-weight: 400;
+  }
+  .btn:hover { background: var(--surface2); color: var(--text); }
+  .btn-primary {
+    background: var(--accent); color: #fff; border-color: var(--accent);
+    font-weight: 500;
+  }
+  .btn-primary:hover { background: #0a5a44; }
+  .btn i { font-size: 13px; }
+
+  /* ── FILTER CHIPS BAR (ops) ── */
+  .chips-bar {
+    display: flex; align-items: center; gap: 6px;
+    margin-bottom: 12px; flex-wrap: wrap;
+  }
+  .chip-label { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: .05em; margin-right: 2px; }
+  .chip-sep { width: 1px; height: 16px; background: var(--border-md); margin: 0 4px; }
+  .chip {
+    padding: 3px 10px; border-radius: 20px;
+    border: 1px solid var(--border-md);
+    font-size: 11px; cursor: pointer;
+    color: var(--text2); background: var(--surface);
+    font-family: var(--font); transition: all .12s;
+  }
+  .chip:hover { background: var(--surface2); }
+  .chip.active { background: var(--info); color: #fff; border-color: var(--info); }
+  .date-chip {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 3px 10px; border-radius: 20px;
+    border: 1px solid var(--border-md);
+    font-size: 11px; color: var(--text2);
+    background: var(--surface); cursor: pointer;
+    font-family: var(--font);
+  }
+  .date-chip i { font-size: 12px; }
+
+  /* ── KPI ROW (ops) ── */
+  .kpi-row {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 8px; margin-bottom: 14px;
+  }
+  .kpi-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 10px 13px;
+  }
+  .kpi-label { font-size: 10px; color: var(--text3); margin-bottom: 3px; text-transform: uppercase; letter-spacing: .04em; }
+  .kpi-val { font-size: 20px; font-weight: 500; letter-spacing: -0.02em; line-height: 1.1; }
+  .kpi-sub { font-size: 10px; color: var(--text3); margin-top: 2px; }
+  .kpi-sub.up { color: var(--danger); }
+  .kpi-sub.dn { color: var(--accent); }
+
+  /* ── METRIC GRID (other pages) ── */
+  .metric-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px; margin-bottom: 18px;
+  }
+  .metric-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+  }
+  .metric-label { font-size: 11px; color: var(--text3); margin-bottom: 5px; }
+  .metric-value { font-size: 22px; font-weight: 500; letter-spacing: -0.02em; line-height: 1; }
+  .metric-sub { font-size: 11px; color: var(--text3); margin-top: 4px; }
+  .c-green { color: var(--accent); }
+  .c-amber { color: var(--warn); }
+  .c-red { color: var(--danger); }
+  .c-blue { color: var(--info); }
+
+  /* ── CHARTS ROW (ops) ── */
+  .charts-row {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+    margin-bottom: 12px;
+  }
+  .chart-panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+  }
+  .panel-title { font-size: 11px; font-weight: 500; margin-bottom: 1px; }
+  .panel-sub { font-size: 10px; color: var(--text3); margin-bottom: 10px; }
+
+  /* horizontal bar chart */
+  .hb-row { display: flex; align-items: center; gap: 7px; margin-bottom: 5px; }
+  .hb-name { width: 85px; font-size: 10px; color: var(--text2); text-align: right; flex-shrink: 0; }
+  .hb-track { flex: 1; height: 14px; background: var(--surface2); border-radius: 3px; overflow: hidden; }
+  .hb-fill { height: 100%; border-radius: 3px; }
+  .hb-vals { display: flex; gap: 6px; width: 58px; justify-content: flex-end; }
+  .hb-count { font-size: 10px; font-weight: 500; }
+  .hb-pct { font-size: 10px; color: var(--text3); }
+
+  /* ── OPS TABLE CARD ── */
+  .ops-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    margin-bottom: 12px;
+  }
+  .ops-card-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface2);
+  }
+  .ops-card-left { display: flex; align-items: center; gap: 8px; }
+  .ops-card-title { font-size: 12px; font-weight: 500; }
+  .ops-count { font-size: 11px; color: var(--text3); }
+  .ops-search-row { display: flex; align-items: center; gap: 6px; }
+  .ops-search {
+    height: 28px; padding: 0 9px;
+    border: 1px solid var(--border-md);
+    border-radius: var(--radius-sm);
+    background: var(--surface); color: var(--text);
+    font-family: var(--font); font-size: 11px;
+    outline: none; width: 160px;
+  }
+  .ops-search:focus { border-color: var(--info); }
+  .ops-select {
+    height: 28px; padding: 0 8px;
+    border: 1px solid var(--border-md);
+    border-radius: var(--radius-sm);
+    background: var(--surface); color: var(--text2);
+    font-family: var(--font); font-size: 11px;
+    outline: none; cursor: pointer;
+  }
+  .ops-select:focus { border-color: var(--info); }
+
+  /* ── TABLES ── */
+  .data-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .data-table th {
+    text-align: left; padding: 6px 12px;
+    font-size: 10px; font-weight: 500; color: var(--text3);
+    text-transform: uppercase; letter-spacing: 0.05em;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface2);
+    cursor: pointer; user-select: none; white-space: nowrap;
+  }
+  .data-table th:hover { color: var(--text); }
+  .data-table td {
+    padding: 7px 12px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+  }
+  .data-table tr:last-child td { border-bottom: none; }
+  .data-table tr:hover td { background: var(--bg); }
+  .cell-bold { font-weight: 500; }
+  .cell-mono { font-family: var(--mono); font-size: 11px; }
+  .cell-secondary { color: var(--text2); }
+  .sort-arrow { color: var(--text3); margin-left: 3px; font-size: 9px; }
+
+  /* ship cell */
+  .ship-cell { display: flex; align-items: center; gap: 7px; }
+  .ship-ico {
+    width: 24px; height: 24px; border-radius: 5px;
+    background: var(--info-light); display: flex; align-items: center;
+    justify-content: center; flex-shrink: 0;
+  }
+  .ship-ico i { font-size: 13px; color: var(--info); }
+
+  /* ── BADGES ── */
+  .badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 10px; font-weight: 500; padding: 2px 7px;
+    border-radius: 20px; white-space: nowrap;
+  }
+  .badge::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: currentColor; opacity: 0.7; flex-shrink: 0; }
+  .b-green { background: var(--accent-light); color: var(--accent-text); }
+  .b-amber { background: var(--warn-light); color: var(--warn); }
+  .b-red { background: var(--danger-light); color: var(--danger); }
+  .b-blue { background: var(--info-light); color: var(--info); }
+  .b-purple { background: var(--purple-light); color: var(--purple-text); }
+  .b-gray { background: var(--surface2); color: var(--text2); }
+
+  /* op type badges (no dot) */
+  .op-badge {
+    display: inline-block; padding: 2px 8px;
+    border-radius: 20px; font-size: 10px; font-weight: 500;
+  }
+  .op-atraque { background: var(--info-light); color: var(--info); }
+  .op-zarpe { background: var(--warn-light); color: var(--warn); }
+
+  /* ── BOTTOM TWO COL (timeline + ports) ── */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+  .three-col { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-bottom: 14px; }
+
+  /* ── CARDS (shared) ── */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin-bottom: 14px;
+  }
+  .card-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface2);
+  }
+  .card-title {
+    display: flex; align-items: center; gap: 7px;
+    font-size: 12px; font-weight: 500; color: var(--text);
+  }
+  .card-title i { font-size: 14px; color: var(--text2); }
+  .card-actions { display: flex; gap: 6px; }
+  .card-body { padding: 0; }
+
+  /* ── PROGRESS BARS ── */
+  .prog-list { padding: 4px 0; }
+  .prog-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 7px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .prog-row:last-child { border-bottom: none; }
+  .prog-label { font-size: 11px; color: var(--text2); min-width: 110px; }
+  .prog-track { flex: 1; height: 5px; background: var(--surface2); border-radius: 3px; }
+  .prog-fill { height: 5px; border-radius: 3px; transition: width 0.5s ease; }
+  .prog-val { font-size: 12px; font-weight: 500; min-width: 38px; text-align: right; }
+
+  /* ── TIMELINE ── */
+  .timeline { padding: 8px 16px; }
+  .tl-item { display: flex; gap: 12px; padding: 9px 0; border-bottom: 1px solid var(--border); }
+  .tl-item:last-child { border-bottom: none; }
+  .tl-time { min-width: 52px; font-size: 11px; color: var(--text3); font-family: var(--mono); padding-top: 1px; }
+  .tl-left { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .tl-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; margin-top: 2px; }
+  .tl-line { width: 1px; flex: 1; background: var(--border-md); min-height: 16px; }
+  .tl-body { flex: 1; }
+  .tl-title { font-size: 12px; font-weight: 500; margin-bottom: 2px; }
+  .tl-sub { font-size: 11px; color: var(--text2); }
+
+  /* ── ALERTS ── */
+  .alert-item {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 12px 16px; border-bottom: 1px solid var(--border);
+  }
+  .alert-item:last-child { border-bottom: none; }
+  .alert-icon {
+    width: 32px; height: 32px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .alert-icon i { font-size: 16px; }
+  .alert-title { font-size: 12px; font-weight: 500; margin-bottom: 3px; }
+  .alert-text { font-size: 11px; color: var(--text2); line-height: 1.6; }
+  .alert-time { font-size: 10px; color: var(--text3); margin-top: 4px; font-family: var(--mono); }
+
+  /* ── FLEET CARDS ── */
+  .tug-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px;
+  }
+  .tug-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+  .tug-name { font-size: 13px; font-weight: 500; }
+  .tug-type { font-size: 11px; color: var(--text3); margin-top: 1px; }
+  .tug-specs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
+  .spec-item .sl { font-size: 10px; color: var(--text3); margin-bottom: 1px; }
+  .spec-item .sv { font-size: 12px; font-weight: 500; font-family: var(--mono); }
+  .tug-bar { height: 3px; background: var(--surface2); border-radius: 2px; margin: 10px 0 6px; }
+  .tug-bar-fill { height: 3px; border-radius: 2px; background: var(--accent); }
+
+  /* ── FACT ROWS ── */
+  .fact-list { }
+  .fact-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 8px 16px; border-bottom: 1px solid var(--border);
+    font-size: 12px;
+  }
+  .fact-row:last-child { border-bottom: none; }
+  .fact-label { color: var(--text2); }
+  .fact-val { font-weight: 500; font-family: var(--mono); }
+  .fact-total {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 16px;
+    border-top: 2px solid var(--border-md);
+    font-size: 13px; font-weight: 500;
+    background: var(--surface2);
+  }
+
+  /* ── INFO BOX ── */
+  .info-box {
+    display: flex; align-items: flex-start; gap: 10px;
+    background: var(--info-light); border: 1px solid rgba(24,95,165,0.15);
+    border-radius: var(--radius-sm);
+    padding: 10px 14px; margin-bottom: 16px;
+    font-size: 12px; color: var(--info);
+  }
+  .info-box i { font-size: 15px; flex-shrink: 0; margin-top: 1px; }
+
+  /* ── LINK ── */
+  a { color: var(--info); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .icon-link { color: var(--text3); font-size: 14px; }
+  .icon-link:hover { color: var(--info); text-decoration: none; }
+
+  /* ── CHART BARS (forecast) ── */
+  .forecast-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 6px 16px; border-bottom: 1px solid var(--border);
+  }
+  .forecast-row:last-child { border-bottom: none; }
+  .fc-month { min-width: 50px; font-size: 11px; color: var(--text2); font-family: var(--mono); }
+  .fc-bar { flex: 1; height: 6px; background: var(--surface2); border-radius: 3px; }
+  .fc-fill { height: 6px; border-radius: 3px; }
+  .fc-val { min-width: 56px; text-align: right; font-size: 11px; font-weight: 500; font-family: var(--mono); }
+
+  /* ── SECTION LABEL ── */
+  .section-label {
+    font-size: 10px; font-weight: 500; color: var(--text3);
+    text-transform: uppercase; letter-spacing: 0.07em;
+    margin: 18px 0 8px;
+  }
+  .section-label:first-child { margin-top: 0; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    .sidebar { display: none; }
+    .main { margin-left: 0; }
+    .kpi-row { grid-template-columns: repeat(3, 1fr); }
+    .metric-grid { grid-template-columns: repeat(2, 1fr); }
+    .two-col { grid-template-columns: 1fr; }
+    .three-col { grid-template-columns: 1fr 1fr; }
+    .charts-row { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 600px) {
+    .kpi-row { grid-template-columns: repeat(2, 1fr); }
+    .metric-grid { grid-template-columns: 1fr 1fr; }
+    .three-col { grid-template-columns: 1fr; }
+  }
+
+  /* ── ANIMATIONS ── */
+  .page.active .kpi-card,
+  .page.active .metric-card {
+    animation: fadeUp 0.22s ease both;
+  }
+  .page.active .kpi-card:nth-child(1),
+  .page.active .metric-card:nth-child(1) { animation-delay: 0ms; }
+  .page.active .kpi-card:nth-child(2),
+  .page.active .metric-card:nth-child(2) { animation-delay: 35ms; }
+  .page.active .kpi-card:nth-child(3),
+  .page.active .metric-card:nth-child(3) { animation-delay: 70ms; }
+  .page.active .kpi-card:nth-child(4),
+  .page.active .metric-card:nth-child(4) { animation-delay: 105ms; }
+  .page.active .kpi-card:nth-child(5) { animation-delay: 140ms; }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── EMPTY CARD ── */
+  .empty-tug {
+    background: var(--surface);
+    border: 1.5px dashed var(--border-md);
+    border-radius: var(--radius);
+    padding: 14px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; min-height: 140px;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .empty-tug:hover { border-color: var(--accent); background: var(--accent-light); }
+  .empty-tug-inner { text-align: center; color: var(--text3); }
+  .empty-tug:hover .empty-tug-inner { color: var(--accent-text); }
+  .empty-tug i { font-size: 22px; margin-bottom: 6px; }
+  .empty-tug span { font-size: 11px; display: block; }
+
+  /* ── FILTER BAR (other pages) ── */
+  .filter-bar { display: flex; gap: 8px; margin-bottom: 14px; align-items: center; }
+  .filter-bar select, .filter-bar input {
+    height: 32px; padding: 0 10px;
+    border: 1px solid var(--border-md);
+    border-radius: var(--radius-sm);
+    background: var(--surface); color: var(--text);
+    font-family: var(--font); font-size: 12px;
+    outline: none; cursor: pointer;
+  }
+  .filter-bar select:focus, .filter-bar input:focus { border-color: var(--accent); }
+  .filter-label { font-size: 11px; color: var(--text2); }
+
+  /* ── STATUS DOT ── */
+  .status-dot {
+    display: inline-block; width: 7px; height: 7px;
+    border-radius: 50%; margin-right: 5px; flex-shrink: 0;
+  }
+  .sd-green { background: var(--accent); }
+  .sd-amber { background: #ef9f27; }
+  .sd-red { background: #e24b4a; }
+  .sd-blue { background: #378add; }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border-md); border-radius: 4px; }
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<header class="topbar">
+  <div class="topbar-left">
+    <img src="saam-towage-logo.png" alt="SAAM Towage" style="height:36px;">
+    <div class="logo-sep"></div>
+    <div class="client-pill">
+      <i class="ti ti-building"></i>
+      Hapag-Lloyd AG
+      <i class="ti ti-chevron-down" style="font-size:12px;margin-left:2px"></i>
+    </div>
+  </div>
+  <div class="topbar-right">
+    <button class="icon-btn" title="Buscar"><i class="ti ti-search"></i></button>
+    <button class="icon-btn" title="Notificaciones">
+      <i class="ti ti-bell"></i>
+      <span class="notif-dot"></span>
+    </button>
+    <button class="icon-btn" title="Configuración"><i class="ti ti-settings"></i></button>
+    <div class="avatar" title="Usuario">HL</div>
+  </div>
+</header>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-section">Principal</div>
+  <button class="nav-item active" onclick="showPage('ops',this)">
+    <i class="ti ti-anchor"></i> Operaciones
+  </button>
+  <button class="nav-item" onclick="showPage('fin',this)">
+    <i class="ti ti-receipt"></i> Facturación
+    <span class="nav-badge nb-red">2</span>
+  </button>
+  <button class="nav-item" onclick="showPage('kpi',this)">
+    <i class="ti ti-chart-bar"></i> Desempeño
+  </button>
+  <button class="nav-item" onclick="showPage('fleet',this)">
+    <i class="ti ti-ship"></i> Flota
+  </button>
+  <button class="nav-item" onclick="showPage('alert',this)">
+    <i class="ti ti-bell"></i> Alertas
+    <span class="nav-badge nb-amber">5</span>
+  </button>
+  <button class="nav-item" onclick="showPage('docs',this)">
+    <i class="ti ti-file"></i> Documentos
+  </button>
+
+  <div class="sidebar-section" style="margin-top:8px">Configuración</div>
+  <button class="nav-item">
+    <i class="ti ti-users"></i> Usuarios
+  </button>
+  <button class="nav-item">
+    <i class="ti ti-mail"></i> Notificaciones
+  </button>
+
+  <div class="sidebar-footer">
+    <div class="nav-item" style="cursor:default;font-size:11px">
+      <i class="ti ti-circle-check" style="color:var(--accent)"></i>
+      <div>
+        <div style="font-weight:500;font-size:11px">Contrato vigente</div>
+        <div style="color:var(--text3);font-size:10px">Chile & Perú · hasta dic-2026</div>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN CONTENT -->
+<main class="main">
+
+  <!-- ═══ OPERACIONES ═══ -->
+  <div class="page active" id="ops">
+
+    <!-- Header compacto -->
+    <div class="page-header">
+      <div>
+        <div class="page-title">Operaciones</div>
+        <div class="page-sub">
+          <span class="live-dot"></span>
+          Actualizado hace 3 min · Hapag-Lloyd AG
+        </div>
+      </div>
+      <div class="header-actions">
+        <button class="date-chip"><i class="ti ti-calendar"></i> May 1 – May 13, 2026</button>
+        <button class="btn"><i class="ti ti-download"></i> Exportar</button>
+        <button class="btn btn-primary"><i class="ti ti-refresh"></i> Actualizar</button>
+      </div>
+    </div>
+
+    <!-- Chips de filtro rápido -->
+    <div class="chips-bar">
+      <span class="chip-label">Puerto</span>
+      <div id="portChips" style="display:flex;gap:4px">
+        <button class="chip active" onclick="chipPort(this,'')">Todos</button>
+        <button class="chip" onclick="chipPort(this,'Valparaíso')">Valparaíso</button>
+        <button class="chip" onclick="chipPort(this,'San Antonio')">San Antonio</button>
+        <button class="chip" onclick="chipPort(this,'Coronel')">Coronel</button>
+        <button class="chip" onclick="chipPort(this,'Iquique')">Iquique</button>
+      </div>
+      <div class="chip-sep"></div>
+      <span class="chip-label">Estado</span>
+      <div id="stateChips" style="display:flex;gap:4px">
+        <button class="chip active" onclick="chipState(this,'')">Todos</button>
+        <button class="chip" onclick="chipState(this,'Completada')">Completada</button>
+        <button class="chip" onclick="chipState(this,'En curso')">En curso</button>
+        <button class="chip" onclick="chipState(this,'Programada')">Programada</button>
+      </div>
+    </div>
+
+    <!-- KPIs en fila -->
+    <div class="kpi-row">
+      <div class="kpi-card">
+        <div class="kpi-label">Maniobras hoy</div>
+        <div class="kpi-val">8</div>
+        <div class="kpi-sub">3 comp. · 1 en curso · 4 prog.</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Tiempo promedio</div>
+        <div class="kpi-val" style="color:var(--accent)">1h 24m</div>
+        <div class="kpi-sub dn">↓ 8 min vs benchmark</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Espera promedio</div>
+        <div class="kpi-val" style="color:var(--warn)">28 min</div>
+        <div class="kpi-sub up">▲ 8 min sobre SLA</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Tugs asignados</div>
+        <div class="kpi-val">19</div>
+        <div class="kpi-sub">en 4 puertos activos</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Bollard pull total</div>
+        <div class="kpi-val">620 t</div>
+        <div class="kpi-sub">disponible hoy</div>
+      </div>
+    </div>
+
+    <!-- Gráficos lado a lado -->
+    <div class="charts-row">
+      <div class="chart-panel">
+        <div class="panel-title">Actividad por puerto — mayo 2026</div>
+        <div class="panel-sub">Maniobras por puerto · ordenado por volumen</div>
+        <div class="hb-row"><span class="hb-name">Valparaíso</span><div class="hb-track"><div class="hb-fill" style="width:100%;background:#1a5fb4"></div></div><div class="hb-vals"><span class="hb-count">61</span><span class="hb-pct">41%</span></div></div>
+        <div class="hb-row"><span class="hb-name">San Antonio</span><div class="hb-track"><div class="hb-fill" style="width:72%;background:#1a5fb4"></div></div><div class="hb-vals"><span class="hb-count">44</span><span class="hb-pct">30%</span></div></div>
+        <div class="hb-row"><span class="hb-name">Coronel</span><div class="hb-track"><div class="hb-fill" style="width:48%;background:#1a5fb4"></div></div><div class="hb-vals"><span class="hb-count">29</span><span class="hb-pct">19%</span></div></div>
+        <div class="hb-row"><span class="hb-name">Iquique</span><div class="hb-track"><div class="hb-fill" style="width:21%;background:#1a5fb4"></div></div><div class="hb-vals"><span class="hb-count">13</span><span class="hb-pct">9%</span></div></div>
+        <div class="hb-row"><span class="hb-name">Lirquén</span><div class="hb-track"><div class="hb-fill" style="width:10%;background:#1a5fb4"></div></div><div class="hb-vals"><span class="hb-count">6</span><span class="hb-pct">4%</span></div></div>
+      </div>
+      <div class="chart-panel">
+        <div class="panel-title">Duración promedio por tipo de operación</div>
+        <div class="panel-sub">Horas promedio por categoría · mayo 2026</div>
+        <div class="hb-row"><span class="hb-name">Guardia seg.</span><div class="hb-track"><div class="hb-fill" style="width:100%;background:#e24b4a"></div></div><div class="hb-vals"><span class="hb-count">44.8h</span><span class="hb-pct">44%</span></div></div>
+        <div class="hb-row"><span class="hb-name">Stand-by est.</span><div class="hb-track"><div class="hb-fill" style="width:57%;background:#ef9f27"></div></div><div class="hb-vals"><span class="hb-count">25.3h</span><span class="hb-pct">25%</span></div></div>
+        <div class="hb-row"><span class="hb-name">Tracción boyaz</span><div class="hb-track"><div class="hb-fill" style="width:42%;background:#378add"></div></div><div class="hb-vals"><span class="hb-count">19.0h</span><span class="hb-pct">19%</span></div></div>
+        <div class="hb-row"><span class="hb-name">Atraque</span><div class="hb-track"><div class="hb-fill" style="width:7%;background:#0f6e56"></div></div><div class="hb-vals"><span class="hb-count">3.1h</span><span class="hb-pct">3%</span></div></div>
+        <div class="hb-row"><span class="hb-name">Zarpe</span><div class="hb-track"><div class="hb-fill" style="width:5%;background:#534ab7"></div></div><div class="hb-vals"><span class="hb-count">2.3h</span><span class="hb-pct">2%</span></div></div>
+        <div class="hb-row"><span class="hb-name">Otros</span><div class="hb-track"><div class="hb-fill" style="width:4%;background:#888780"></div></div><div class="hb-vals"><span class="hb-count">1.6h</span><span class="hb-pct">2%</span></div></div>
+      </div>
+    </div>
+
+    <!-- Tabla de maniobras -->
+    <div class="ops-card">
+      <div class="ops-card-header">
+        <div class="ops-card-left">
+          <i class="ti ti-ship" style="font-size:14px;color:var(--text2)"></i>
+          <span class="ops-card-title">Lista de maniobras</span>
+          <span class="ops-count" id="opsCount">5 maniobras</span>
+        </div>
+        <div class="ops-search-row">
+          <input class="ops-search" type="text" placeholder="Buscar buque, puerto…" id="opsSearch" oninput="renderOpsTable()">
+          <select class="ops-select" id="opsTipo" onchange="renderOpsTable()">
+            <option value="">Todos los tipos</option>
+            <option value="Atraque">Atraque</option>
+            <option value="Zarpe">Zarpe</option>
+          </select>
+          <select class="ops-select" id="opsEstado" onchange="renderOpsTable()">
+            <option value="">Todos los estados</option>
+            <option value="Completada">Completada</option>
+            <option value="En curso">En curso</option>
+            <option value="Programada">Programada</option>
+          </select>
+          <button class="btn" style="padding:4px 10px;font-size:11px" onclick="exportCSV()"><i class="ti ti-download"></i> CSV</button>
+        </div>
+      </div>
+      <div style="overflow-x:auto">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th onclick="sortOps('buque')">Buque <span class="sort-arrow">↕</span></th>
+              <th onclick="sortOps('puerto')">Puerto <span class="sort-arrow">↕</span></th>
+              <th onclick="sortOps('tipo')">Tipo <span class="sort-arrow">↕</span></th>
+              <th onclick="sortOps('inicio')">Inicio <span class="sort-arrow">↕</span></th>
+              <th>Duración</th>
+              <th style="text-align:center">Tugs</th>
+              <th>Bollard pull</th>
+              <th>Piloto</th>
+              <th onclick="sortOps('estado')">Estado <span class="sort-arrow">↕</span></th>
+              <th>Capitán</th>
+            </tr>
+          </thead>
+          <tbody id="opsTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Timeline + Puertos -->
+    <div class="two-col">
+      <div class="card" style="margin-bottom:0">
+        <div class="card-header">
+          <span class="card-title"><i class="ti ti-clock"></i>Timeline — Valparaíso hoy</span>
+        </div>
+        <div class="card-body">
+          <div class="timeline">
+            <div class="tl-item">
+              <div class="tl-time">06:42</div>
+              <div class="tl-left"><div class="tl-dot" style="background:var(--accent)"></div><div class="tl-line"></div></div>
+              <div class="tl-body">
+                <div class="tl-title">Hamburg Express — atraque completo</div>
+                <div class="tl-sub">1h 18m · 3 remolcadores · Piloto García</div>
+              </div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-time">13:30</div>
+              <div class="tl-left"><div class="tl-dot" style="background:#378add"></div><div class="tl-line"></div></div>
+              <div class="tl-body">
+                <div class="tl-title">Berlin Express — en maniobra</div>
+                <div class="tl-sub">Inicio confirmado · 3 remolcadores asignados</div>
+              </div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-time">19:00</div>
+              <div class="tl-left"><div class="tl-dot" style="background:#ef9f27"></div><div class="tl-line"></div></div>
+              <div class="tl-body">
+                <div class="tl-title">MSC Beatrice — atraque (3rd party)</div>
+                <div class="tl-sub" style="color:var(--warn)">Ventana ocupada — posible demora en turno Hapag</div>
+              </div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-time">22:00</div>
+              <div class="tl-left"><div class="tl-dot" style="background:var(--border-md)"></div></div>
+              <div class="tl-body">
+                <div class="tl-title">Frankfurt Express — zarpe estimado</div>
+                <div class="tl-sub">Pendiente confirmación agente marítimo</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card" style="margin-bottom:0">
+        <div class="card-header">
+          <span class="card-title"><i class="ti ti-map-pin"></i>Actividad por puerto — mayo 2026</span>
+        </div>
+        <div class="card-body">
+          <div class="prog-list">
+            <div class="prog-row"><span class="prog-label">Valparaíso</span><div class="prog-track"><div class="prog-fill" style="width:100%;background:var(--info)"></div></div><span class="prog-val">61 man.</span></div>
+            <div class="prog-row"><span class="prog-label">San Antonio</span><div class="prog-track"><div class="prog-fill" style="width:72%;background:var(--info)"></div></div><span class="prog-val">44 man.</span></div>
+            <div class="prog-row"><span class="prog-label">Coronel</span><div class="prog-track"><div class="prog-fill" style="width:48%;background:var(--info)"></div></div><span class="prog-val">29 man.</span></div>
+            <div class="prog-row"><span class="prog-label">Iquique</span><div class="prog-track"><div class="prog-fill" style="width:21%;background:var(--info)"></div></div><span class="prog-val">13 man.</span></div>
+            <div class="prog-row"><span class="prog-label">Lirquén</span><div class="prog-track"><div class="prog-fill" style="width:10%;background:var(--info)"></div></div><span class="prog-val">6 man.</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ FACTURACIÓN ═══ -->
+  <div class="page" id="fin">
+    <div class="page-header">
+      <div>
+        <div class="page-title">Facturación</div>
+        <div class="page-sub">Historial, desglose y estado de pagos por puerto</div>
+      </div>
+      <div class="header-actions">
+        <button class="btn"><i class="ti ti-file-export"></i> Exportar todo</button>
+      </div>
+    </div>
+
+    <div class="metric-grid">
+      <div class="metric-card">
+        <div class="metric-label">Facturado 2026 YTD</div>
+        <div class="metric-value">$482K</div>
+        <div class="metric-sub">USD acumulado</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Pendiente de pago</div>
+        <div class="metric-value c-red">$63K</div>
+        <div class="metric-sub c-red">2 facturas — 1 vencida</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Uso contrato Chile</div>
+        <div class="metric-value c-green">78%</div>
+        <div class="metric-sub c-green">Dentro del volumen pactado</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">FSCH aplicado Q1–Q2</div>
+        <div class="metric-value">$18.4K</div>
+        <div class="metric-sub">Combustible Chile + Perú</div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title"><i class="ti ti-file-invoice"></i>Desglose por concepto — mayo 2026</span>
+        </div>
+        <div class="card-body">
+          <div class="fact-list">
+            <div class="fact-row"><span class="fact-label">Tarifa base maniobras (147 man.)</span><span class="fact-val">$38,200</span></div>
+            <div class="fact-row"><span class="fact-label" style="color:var(--warn)">Cargo espera &gt;30 min (6 casos)</span><span class="fact-val c-amber">$2,800</span></div>
+            <div class="fact-row"><span class="fact-label">FSCH — Combustible (+9.4%)</span><span class="fact-val">$4,100</span></div>
+            <div class="fact-row"><span class="fact-label">Asistencia nocturna (+20%)</span><span class="fact-val">$3,600</span></div>
+            <div class="fact-row"><span class="fact-label">Remolcador adicional (3 casos)</span><span class="fact-val">$1,800</span></div>
+          </div>
+          <div class="fact-total"><span>Total mayo 2026</span><span>$50,500</span></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title"><i class="ti ti-chart-line"></i>Proyección mensual 2026</span>
+        </div>
+        <div class="card-body">
+          <div class="forecast-row"><span class="fc-month">Ene</span><div class="fc-bar"><div class="fc-fill" style="width:70%;background:var(--info)"></div></div><span class="fc-val c-blue">$44,200</span></div>
+          <div class="forecast-row"><span class="fc-month">Feb</span><div class="fc-bar"><div class="fc-fill" style="width:60%;background:var(--info)"></div></div><span class="fc-val c-blue">$38,100</span></div>
+          <div class="forecast-row"><span class="fc-month">Mar</span><div class="fc-bar"><div class="fc-fill" style="width:83%;background:var(--info)"></div></div><span class="fc-val c-blue">$52,300</span></div>
+          <div class="forecast-row"><span class="fc-month">Abr</span><div class="fc-bar"><div class="fc-fill" style="width:75%;background:var(--info)"></div></div><span class="fc-val c-blue">$47,500</span></div>
+          <div class="forecast-row"><span class="fc-month">May</span><div class="fc-bar"><div class="fc-fill" style="width:80%;background:var(--info)"></div></div><span class="fc-val c-blue">$50,500</span></div>
+          <div class="forecast-row"><span class="fc-month">Jun (est)</span><div class="fc-bar"><div class="fc-fill" style="width:78%;background:#b5d4f4"></div></div><span class="fc-val cell-secondary">~$49K</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title"><i class="ti ti-receipt"></i>Facturas — estado y descarga</span>
+        <div class="card-actions">
+          <select style="height:26px;font-size:11px;padding:0 8px;border:1px solid var(--border-md);border-radius:4px;font-family:var(--font);background:var(--surface);color:var(--text2)">
+            <option>Todos los estados</option>
+            <option>Pendiente</option>
+            <option>Vencida</option>
+            <option>Pagada</option>
+          </select>
+        </div>
+      </div>
+      <div class="card-body" style="overflow-x:auto">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>N° Factura</th><th>Puerto</th><th>Período</th><th>Maniobras</th>
+              <th>Base</th><th>FSCH</th><th>Total</th><th>Vencimiento</th><th>Estado</th><th>PDF</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="cell-bold cell-mono">SAM-2026-0341</td><td>Valparaíso</td><td>Abr 2026</td>
+              <td style="text-align:center">43</td><td class="cell-mono">$24,100</td><td class="cell-mono">$1,800</td>
+              <td class="cell-bold cell-mono">$28,450</td><td class="cell-mono" style="color:var(--danger)">15-may-26</td>
+              <td><span class="badge b-red">Vencida</span></td>
+              <td><a href="#" class="icon-link"><i class="ti ti-download"></i></a></td>
+            </tr>
+            <tr>
+              <td class="cell-bold cell-mono">SAM-2026-0298</td><td>San Antonio</td><td>Abr 2026</td>
+              <td style="text-align:center">51</td><td class="cell-mono">$30,200</td><td class="cell-mono">$2,300</td>
+              <td class="cell-bold cell-mono">$34,800</td><td class="cell-mono">30-may-26</td>
+              <td><span class="badge b-amber">Pendiente</span></td>
+              <td><a href="#" class="icon-link"><i class="ti ti-download"></i></a></td>
+            </tr>
+            <tr>
+              <td class="cell-bold cell-mono">SAM-2026-0251</td><td>Coronel</td><td>Mar 2026</td>
+              <td style="text-align:center">29</td><td class="cell-mono">$16,500</td><td class="cell-mono">$1,100</td>
+              <td class="cell-bold cell-mono">$19,200</td><td class="cell-mono">14-abr-26</td>
+              <td><span class="badge b-green">Pagada</span></td>
+              <td><a href="#" class="icon-link"><i class="ti ti-download"></i></a></td>
+            </tr>
+            <tr>
+              <td class="cell-bold cell-mono">SAM-2026-0201</td><td>Iquique</td><td>Mar 2026</td>
+              <td style="text-align:center">13</td><td class="cell-mono">$10,800</td><td class="cell-mono">$820</td>
+              <td class="cell-bold cell-mono">$12,700</td><td class="cell-mono">31-mar-26</td>
+              <td><span class="badge b-green">Pagada</span></td>
+              <td><a href="#" class="icon-link"><i class="ti ti-download"></i></a></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ DESEMPEÑO ═══ -->
+  <div class="page" id="kpi">
+    <div class="page-header">
+      <div>
+        <div class="page-title">Desempeño</div>
+        <div class="page-sub">KPIs contractuales y evaluaciones de capitanes — últimos 90 días</div>
+      </div>
+      <div class="header-actions">
+        <button class="btn"><i class="ti ti-download"></i> Reporte PDF</button>
+      </div>
+    </div>
+
+    <div class="metric-grid">
+      <div class="metric-card">
+        <div class="metric-label">SLA puntualidad</div>
+        <div class="metric-value c-green">94%</div>
+        <div class="metric-sub c-green">Objetivo contractual: 90%</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Disponibilidad tugs</div>
+        <div class="metric-value c-green">98.2%</div>
+        <div class="metric-sub c-green">Sobre objetivo 95%</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Espera promedio p50</div>
+        <div class="metric-value c-amber">23 min</div>
+        <div class="metric-sub c-amber">+3 min sobre SLA ≤20 min</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Rating capitanes</div>
+        <div class="metric-value c-green">4.5 / 5</div>
+        <div class="metric-sub">147 evaluaciones</div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title"><i class="ti ti-target"></i>KPIs de servicio — últimos 90 días</span>
+        </div>
+        <div class="card-body">
+          <div class="prog-list">
+            <div class="prog-row"><span class="prog-label">Puntualidad maniobras</span><div class="prog-track"><div class="prog-fill" style="width:94%;background:var(--accent)"></div></div><span class="prog-val c-green">94%</span></div>
+            <div class="prog-row"><span class="prog-label">Disponibilidad remolcadores</span><div class="prog-track"><div class="prog-fill" style="width:98%;background:var(--accent)"></div></div><span class="prog-val c-green">98%</span></div>
+            <div class="prog-row"><span class="prog-label">Espera &lt;20 min</span><div class="prog-track"><div class="prog-fill" style="width:81%;background:#ef9f27"></div></div><span class="prog-val c-amber">81%</span></div>
+            <div class="prog-row"><span class="prog-label">Incidentes / 100 man.</span><div class="prog-track"><div class="prog-fill" style="width:3%;background:var(--accent)"></div></div><span class="prog-val c-green">0.3</span></div>
+            <div class="prog-row"><span class="prog-label">Rating capitanes (media)</span><div class="prog-track"><div class="prog-fill" style="width:90%;background:var(--accent)"></div></div><span class="prog-val c-green">4.5</span></div>
+            <div class="prog-row"><span class="prog-label">Escalaciones &lt;4h</span><div class="prog-track"><div class="prog-fill" style="width:88%;background:var(--accent)"></div></div><span class="prog-val c-green">88%</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title"><i class="ti ti-trending-up"></i>Tendencia — espera promedio (min)</span>
+        </div>
+        <div class="card-body">
+          <div class="prog-list">
+            <div class="prog-row"><span class="prog-label">Ene–Feb 2026</span><div class="prog-track"><div class="prog-fill" style="width:40%;background:var(--info)"></div></div><span class="prog-val">16 min</span></div>
+            <div class="prog-row"><span class="prog-label">Mar 2026</span><div class="prog-track"><div class="prog-fill" style="width:48%;background:var(--info)"></div></div><span class="prog-val">19 min</span></div>
+            <div class="prog-row"><span class="prog-label">Abr 2026</span><div class="prog-track"><div class="prog-fill" style="width:55%;background:#ef9f27"></div></div><span class="prog-val c-amber">22 min</span></div>
+            <div class="prog-row"><span class="prog-label">May 2026 (parcial)</span><div class="prog-track"><div class="prog-fill" style="width:58%;background:#ef9f27"></div></div><span class="prog-val c-amber">23 min</span></div>
+          </div>
+          <div style="padding:8px 16px;font-size:11px;color:var(--text3);border-top:1px solid var(--border)">
+            <i class="ti ti-info-circle" style="font-size:12px;vertical-align:-1px;margin-right:4px"></i>
+            Incremento atribuido a congestión Valparaíso bertha 4–6. Tug adicional asignado desde 13-may.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title"><i class="ti ti-star"></i>Evaluaciones de capitanes — últimas 10</span>
+        <div class="card-actions">
+          <button class="btn" style="font-size:11px;padding:4px 10px"><i class="ti ti-download"></i> Excel</button>
+        </div>
+      </div>
+      <div class="card-body" style="overflow-x:auto">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Buque</th><th>Puerto</th><th>Fecha</th><th>Rating</th>
+              <th>Puntualidad</th><th>Comunicación</th><th>Maniobra</th><th>Comentario capitán</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="cell-bold">Hamburg Express</td><td>Valparaíso</td><td class="cell-mono">12-may</td>
+              <td><span class="badge b-green">★ 5.0</span></td>
+              <td><span class="badge b-green">✓ Puntual</span></td>
+              <td><span class="badge b-green">✓ Clara</span></td>
+              <td><span class="badge b-green">Excelente</span></td>
+              <td class="cell-secondary">Maniobra fluida, sin esperas. Muy profesional.</td>
+            </tr>
+            <tr>
+              <td class="cell-bold">Colombo Express</td><td>San Antonio</td><td class="cell-mono">12-may</td>
+              <td><span class="badge b-green">★ 4.5</span></td>
+              <td><span class="badge b-green">✓ Puntual</span></td>
+              <td><span class="badge b-green">✓ Clara</span></td>
+              <td><span class="badge b-amber">Buena</span></td>
+              <td class="cell-secondary">Viento fuerte, buen desempeño del equipo.</td>
+            </tr>
+            <tr>
+              <td class="cell-bold">Frankfurt Express</td><td>Coronel</td><td class="cell-mono">10-may</td>
+              <td><span class="badge b-amber">★ 3.5</span></td>
+              <td><span class="badge b-red">✗ Tardío</span></td>
+              <td><span class="badge b-green">✓ Clara</span></td>
+              <td><span class="badge b-amber">Regular</span></td>
+              <td class="cell-secondary" style="color:var(--danger)">Espera 42 min sin aviso previo al capitán.</td>
+            </tr>
+            <tr>
+              <td class="cell-bold">Berlin Express</td><td>Valparaíso</td><td class="cell-mono">08-may</td>
+              <td><span class="badge b-green">★ 4.8</span></td>
+              <td><span class="badge b-green">✓ Puntual</span></td>
+              <td><span class="badge b-green">✓ Clara</span></td>
+              <td><span class="badge b-green">Excelente</span></td>
+              <td class="cell-secondary">Muy preciso en posicionamiento. Equipo sólido.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ FLOTA ═══ -->
+  <div class="page" id="fleet">
+    <div class="page-header">
+      <div>
+        <div class="page-title">Flota</div>
+        <div class="page-sub">Remolcadores asignados a puertos Hapag-Lloyd · Estado en tiempo real</div>
+      </div>
+      <div class="header-actions">
+        <select style="height:32px;font-size:12px;padding:0 10px;border:1px solid var(--border-md);border-radius:var(--radius-sm);font-family:var(--font);background:var(--surface);color:var(--text2)">
+          <option>Todos los puertos</option>
+          <option>Valparaíso</option>
+          <option>San Antonio</option>
+          <option>Coronel</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="info-box">
+      <i class="ti ti-info-circle"></i>
+      Flota asignada a puertos donde opera Hapag-Lloyd. Capacidad total disponible hoy: <strong>620 t bollard pull</strong> en 4 puertos.
+    </div>
+
+    <div class="three-col">
+      <div class="tug-card">
+        <div class="tug-header">
+          <div><div class="tug-name">SAAM Arauco</div><div class="tug-type">ASD Tractor · Valparaíso</div></div>
+          <span class="badge b-green">Disponible</span>
+        </div>
+        <div class="tug-bar"><div class="tug-bar-fill" style="width:91%"></div></div>
+        <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text3);margin-bottom:8px">
+          <span>Bollard pull</span><span style="color:var(--accent);font-weight:500">75 t</span>
+        </div>
+        <div class="tug-specs">
+          <div class="spec-item"><div class="sl">Potencia</div><div class="sv">4,200 kW</div></div>
+          <div class="spec-item"><div class="sl">Eslora</div><div class="sv">32 m</div></div>
+          <div class="spec-item"><div class="sl">Sistema</div><div class="sv">Z-drive</div></div>
+          <div class="spec-item"><div class="sl">Año</div><div class="sv">2018</div></div>
+          <div class="spec-item"><div class="sl">Inspección</div><div class="sv">Mar 2026</div></div>
+          <div class="spec-item"><div class="sl">Certificado</div><div class="sv">DNV GL</div></div>
+        </div>
+      </div>
+
+      <div class="tug-card">
+        <div class="tug-header">
+          <div><div class="tug-name">SAAM Limarí</div><div class="tug-type">VSP · Valparaíso</div></div>
+          <span class="badge b-blue">En maniobra</span>
+        </div>
+        <div class="tug-bar"><div class="tug-bar-fill" style="width:83%;background:var(--info)"></div></div>
+        <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text3);margin-bottom:8px">
+          <span>Bollard pull</span><span style="color:var(--info);font-weight:500">68 t</span>
+        </div>
+        <div class="tug-specs">
+          <div class="spec-item"><div class="sl">Potencia</div><div class="sv">3,800 kW</div></div>
+          <div class="spec-item"><div class="sl">Eslora</div><div class="sv">30 m</div></div>
+          <div class="spec-item"><div class="sl">Sistema</div><div class="sv">Voith VSP</div></div>
+          <div class="spec-item"><div class="sl">Año</div><div class="sv">2015</div></div>
+          <div class="spec-item"><div class="sl">Libre aprox.</div><div class="sv">15:30 h</div></div>
+          <div class="spec-item"><div class="sl">Certificado</div><div class="sv">Bureau V.</div></div>
+        </div>
+      </div>
+
+      <div class="tug-card">
+        <div class="tug-header">
+          <div><div class="tug-name">SAAM Maule</div><div class="tug-type">ASD · San Antonio</div></div>
+          <span class="badge b-green">Disponible</span>
+        </div>
+        <div class="tug-bar"><div class="tug-bar-fill" style="width:100%"></div></div>
+        <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text3);margin-bottom:8px">
+          <span>Bollard pull</span><span style="color:var(--accent);font-weight:500">82 t</span>
+        </div>
+        <div class="tug-specs">
+          <div class="spec-item"><div class="sl">Potencia</div><div class="sv">4,600 kW</div></div>
+          <div class="spec-item"><div class="sl">Eslora</div><div class="sv">34 m</div></div>
+          <div class="spec-item"><div class="sl">Sistema</div><div class="sv">Z-drive</div></div>
+          <div class="spec-item"><div class="sl">Año</div><div class="sv">2021</div></div>
+          <div class="spec-item"><div class="sl">Inspección</div><div class="sv">Ene 2026</div></div>
+          <div class="spec-item"><div class="sl">Certificado</div><div class="sv">Lloyd's</div></div>
+        </div>
+      </div>
+
+      <div class="tug-card">
+        <div class="tug-header">
+          <div><div class="tug-name">SAAM Biobío</div><div class="tug-type">ASD · Coronel</div></div>
+          <span class="badge b-amber">Mantención</span>
+        </div>
+        <div class="tug-bar"><div class="tug-bar-fill" style="width:73%;background:#ef9f27"></div></div>
+        <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text3);margin-bottom:8px">
+          <span>Bollard pull</span><span style="color:var(--warn);font-weight:500">60 t</span>
+        </div>
+        <div class="tug-specs">
+          <div class="spec-item"><div class="sl">Potencia</div><div class="sv">3,200 kW</div></div>
+          <div class="spec-item"><div class="sl">Eslora</div><div class="sv">28 m</div></div>
+          <div class="spec-item"><div class="sl">Sistema</div><div class="sv">Z-drive</div></div>
+          <div class="spec-item"><div class="sl">Año</div><div class="sv">2012</div></div>
+          <div class="spec-item"><div class="sl">Reingreso</div><div class="sv">19-may-26</div></div>
+          <div class="spec-item"><div class="sl">Sustituto</div><div class="sv">SAAM Sur</div></div>
+        </div>
+      </div>
+
+      <div class="tug-card">
+        <div class="tug-header">
+          <div><div class="tug-name">SAAM Iquique</div><div class="tug-type">ASD Tractor · Iquique</div></div>
+          <span class="badge b-green">Disponible</span>
+        </div>
+        <div class="tug-bar"><div class="tug-bar-fill" style="width:85%"></div></div>
+        <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text3);margin-bottom:8px">
+          <span>Bollard pull</span><span style="color:var(--accent);font-weight:500">70 t</span>
+        </div>
+        <div class="tug-specs">
+          <div class="spec-item"><div class="sl">Potencia</div><div class="sv">3,900 kW</div></div>
+          <div class="spec-item"><div class="sl">Eslora</div><div class="sv">31 m</div></div>
+          <div class="spec-item"><div class="sl">Sistema</div><div class="sv">Z-drive</div></div>
+          <div class="spec-item"><div class="sl">Año</div><div class="sv">2019</div></div>
+          <div class="spec-item"><div class="sl">Inspección</div><div class="sv">Feb 2026</div></div>
+          <div class="spec-item"><div class="sl">Certificado</div><div class="sv">DNV GL</div></div>
+        </div>
+      </div>
+
+      <div class="empty-tug">
+        <div class="empty-tug-inner">
+          <i class="ti ti-search"></i>
+          <span>Buscar por bollard pull</span>
+          <span style="margin-top:3px;font-size:10px;color:var(--text3)">o filtrar por puerto</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ ALERTAS ═══ -->
+  <div class="page" id="alert">
+    <div class="page-header">
+      <div>
+        <div class="page-title">Alertas</div>
+        <div class="page-sub">Notificaciones activas · 2 críticas requieren acción</div>
+      </div>
+      <div class="header-actions">
+        <button class="btn"><i class="ti ti-settings"></i> Configurar alertas</button>
+      </div>
+    </div>
+
+    <div class="metric-grid">
+      <div class="metric-card">
+        <div class="metric-label">Alertas críticas</div>
+        <div class="metric-value c-red">2</div>
+        <div class="metric-sub">Acción inmediata requerida</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Advertencias</div>
+        <div class="metric-value c-amber">3</div>
+        <div class="metric-sub">Monitorear evolución</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Informativas</div>
+        <div class="metric-value">4</div>
+        <div class="metric-sub">Sin acción requerida</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Resueltas (7 días)</div>
+        <div class="metric-value c-green">11</div>
+        <div class="metric-sub">Ver historial</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title"><i class="ti ti-alert-circle" style="color:var(--danger)"></i>Críticas — acción requerida</span>
+      </div>
+      <div class="card-body">
+        <div class="alert-item">
+          <div class="alert-icon" style="background:var(--danger-light)"><i class="ti ti-credit-card" style="color:var(--danger)"></i></div>
+          <div style="flex:1">
+            <div class="alert-title c-red">Factura vencida — SAM-2026-0341 · $28,450 USD</div>
+            <div class="alert-text">Vencida el 15-may-2026. Riesgo de bloqueo de servicio según contrato cláusula 8.2. Contacto: billing@saamtowage.com</div>
+            <div class="alert-time">Detectada el 15-may-2026 · hace 0 días</div>
+          </div>
+          <button class="btn btn-primary" style="font-size:11px;padding:4px 12px;flex-shrink:0">Gestionar pago</button>
+        </div>
+        <div class="alert-item">
+          <div class="alert-icon" style="background:var(--danger-light)"><i class="ti ti-clock" style="color:var(--danger)"></i></div>
+          <div style="flex:1">
+            <div class="alert-title c-red">SLA tiempo de espera incumplido — Valparaíso</div>
+            <div class="alert-text">Promedio mayo: 23 min (SLA contractual: ≤20 min). 6 maniobras superaron los 35 min. SAAM asignó tug adicional desde 13-may-2026.</div>
+            <div class="alert-time">Detectada el 10-may-2026 · hace 2 días</div>
+          </div>
+          <button class="btn" style="font-size:11px;padding:4px 12px;flex-shrink:0">Ver detalle</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title"><i class="ti ti-alert-triangle" style="color:var(--warn)"></i>Advertencias — monitorear</span>
+      </div>
+      <div class="card-body">
+        <div class="alert-item">
+          <div class="alert-icon" style="background:var(--warn-light)"><i class="ti ti-tool" style="color:var(--warn)"></i></div>
+          <div>
+            <div class="alert-title c-amber">SAAM Biobío en mantención programada — Coronel reducido</div>
+            <div class="alert-text">14–19 mayo. Sustituto SAAM Sur asignado (55 t bollard pull). Para buques &gt;300m se recomienda confirmar disponibilidad con 48h de anticipación.</div>
+            <div class="alert-time">Informada el 10-may-2026</div>
+          </div>
+        </div>
+        <div class="alert-item">
+          <div class="alert-icon" style="background:var(--warn-light)"><i class="ti ti-ship" style="color:var(--warn)"></i></div>
+          <div>
+            <div class="alert-title c-amber">Congestión bertha 4–6 Valparaíso — obras de dragado</div>
+            <div class="alert-text">Posible demora 15–25 min en ventanas nocturnas entre el 12–16 mayo. Sin impacto en escalas confirmadas de Hapag-Lloyd según plan operativo actual.</div>
+            <div class="alert-time">Informada el 11-may-2026</div>
+          </div>
+        </div>
+        <div class="alert-item">
+          <div class="alert-icon" style="background:var(--warn-light)"><i class="ti ti-trending-up" style="color:var(--warn)"></i></div>
+          <div>
+            <div class="alert-title c-amber">Tendencia creciente en tiempo de espera — seguimiento activo</div>
+            <div class="alert-text">Tercer mes consecutivo por encima del objetivo. SAAM coordinará reunión de revisión operacional para segunda quincena de mayo.</div>
+            <div class="alert-time">Generada automáticamente el 12-may-2026</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title"><i class="ti ti-info-circle" style="color:var(--info)"></i>Informativas</span>
+      </div>
+      <div class="card-body">
+        <div class="alert-item">
+          <div class="alert-icon" style="background:var(--accent-light)"><i class="ti ti-file-check" style="color:var(--accent)"></i></div>
+          <div>
+            <div class="alert-title c-green">Contrato 2026 Chile & Perú vigente — próxima revisión oct-2026</div>
+            <div class="alert-text">Tarifa con FAF actualizada desde 1-mar-2026. Se notificará 60 días antes del vencimiento para apertura de proceso de renovación.</div>
+          </div>
+        </div>
+        <div class="alert-item">
+          <div class="alert-icon" style="background:var(--accent-light)"><i class="ti ti-calendar" style="color:var(--accent)"></i></div>
+          <div>
+            <div class="alert-title">Reporte mensual mayo disponible el 01-jun-2026</div>
+            <div class="alert-text">El resumen operacional mensual (maniobras, KPIs, incidentes, facturación) se generará y enviará automáticamente al correo registrado.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ DOCUMENTOS ═══ -->
+  <div class="page" id="docs">
+    <div class="page-header">
+      <div>
+        <div class="page-title">Documentos</div>
+        <div class="page-sub">Contratos vigentes, reportes y certificados descargables</div>
+      </div>
+      <div class="header-actions">
+        <button class="btn"><i class="ti ti-search"></i> Buscar documentos</button>
+      </div>
+    </div>
+
+    <div class="section-label">Contratos vigentes</div>
+    <div class="card">
+      <div class="card-body" style="overflow-x:auto">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Documento</th><th>País / Puerto</th><th>Vigencia desde</th>
+              <th>Vigencia hasta</th><th>Tarifa base</th><th>FAF</th><th>Estado</th><th>Ver</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="cell-bold">Contrato Marco Chile 2026</td>
+              <td>Chile (4 puertos)</td>
+              <td class="cell-mono">01-ene-2026</td>
+              <td class="cell-mono">31-dic-2026</td>
+              <td>Tabla Anexo A</td>
+              <td>Incluido</td>
+              <td><span class="badge b-green">Vigente</span></td>
+              <td><a href="#" class="icon-link"><i class="ti ti-eye"></i></a></td>
+            </tr>
+            <tr>
+              <td class="cell-bold">Contrato Perú 2026</td>
+              <td>Callao</td>
+              <td class="cell-mono">01-mar-2026</td>
+              <td class="cell-mono">28-feb-2027</td>
+              <td>Tabla Anexo B</td>
+              <td>+8% FSCH</td>
+              <td><span class="badge b-green">Vigente</span></td>
+              <td><a href="#" class="icon-link"><i class="ti ti-eye"></i></a></td>
+            </tr>
+            <tr>
+              <td class="cell-bold">Adenda FSCH Q1 2026</td>
+              <td>Chile</td>
+              <td class="cell-mono">01-ene-2026</td>
+              <td class="cell-mono">31-mar-2026</td>
+              <td>—</td>
+              <td>+9.4%</td>
+              <td><span class="badge b-purple">Archivado</span></td>
+              <td><a href="#" class="icon-link"><i class="ti ti-eye"></i></a></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="section-label">Reportes descargables</div>
+    <div class="card">
+      <div class="card-body" style="overflow-x:auto">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Reporte</th><th>Período</th><th>Formato</th>
+              <th>Contenido</th><th>Generado</th><th>Descargar</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="cell-bold">Resumen operacional mensual</td>
+              <td>Abr 2026</td>
+              <td><span class="badge b-blue">PDF + Excel</span></td>
+              <td class="cell-secondary">Maniobras, KPIs, incidentes por puerto</td>
+              <td class="cell-mono">01-may-2026</td>
+              <td><a href="#" class="icon-link"><i class="ti ti-download"></i></a></td>
+            </tr>
+            <tr>
+              <td class="cell-bold">Certificados de maniobra</td>
+              <td>Abr 2026</td>
+              <td><span class="badge b-gray">PDF (por escala)</span></td>
+              <td class="cell-secondary">Acta oficial firmada por piloto</td>
+              <td class="cell-mono">Diario</td>
+              <td><a href="#" class="icon-link"><i class="ti ti-download"></i></a></td>
+            </tr>
+            <tr>
+              <td class="cell-bold">Reporte FSCH — justificación</td>
+              <td>Q1 2026</td>
+              <td><span class="badge b-gray">PDF</span></td>
+              <td class="cell-secondary">Consumo, precio diesel, cálculo aplicado</td>
+              <td class="cell-mono">31-mar-2026</td>
+              <td><a href="#" class="icon-link"><i class="ti ti-download"></i></a></td>
+            </tr>
+            <tr>
+              <td class="cell-bold">Evaluaciones de capitanes</td>
+              <td>May 2026</td>
+              <td><span class="badge b-green">Excel</span></td>
+              <td class="cell-secondary">Ratings, comentarios, desglose por puerto</td>
+              <td class="cell-mono">En curso</td>
+              <td><a href="#" class="icon-link"><i class="ti ti-download"></i></a></td>
+            </tr>
+            <tr>
+              <td class="cell-bold">Reporte ESG / emisiones CO₂</td>
+              <td>Q1 2026</td>
+              <td><span class="badge b-gray">PDF</span></td>
+              <td class="cell-secondary">Consumo combustible, emisiones estimadas</td>
+              <td class="cell-mono">15-abr-2026</td>
+              <td><a href="#" class="icon-link"><i class="ti ti-download"></i></a></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="section-label">Certificados y seguros</div>
+    <div class="card">
+      <div class="card-body" style="overflow-x:auto">
+        <table class="data-table">
+          <thead>
+            <tr><th>Documento</th><th>Remolcador</th><th>Entidad</th><th>Vencimiento</th><th>Estado</th><th>Ver</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="cell-bold">Certificado de clasificación</td>
+              <td>SAAM Arauco</td><td>DNV GL</td>
+              <td class="cell-mono">Jun 2027</td>
+              <td><span class="badge b-green">Vigente</span></td>
+              <td><a href="#" class="icon-link"><i class="ti ti-eye"></i></a></td>
+            </tr>
+            <tr>
+              <td class="cell-bold">Póliza P&I</td>
+              <td>Flota Chile</td><td>Skuld / Gard</td>
+              <td class="cell-mono">Feb 2027</td>
+              <td><span class="badge b-green">Vigente</span></td>
+              <td><a href="#" class="icon-link"><i class="ti ti-eye"></i></a></td>
+            </tr>
+            <tr>
+              <td class="cell-bold">ISPS / Seguridad portuaria</td>
+              <td>Todos los puertos</td><td>DIRECTEMAR</td>
+              <td class="cell-mono">Sep 2026</td>
+              <td><span class="badge b-green">Vigente</span></td>
+              <td><a href="#" class="icon-link"><i class="ti ti-eye"></i></a></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<script>
+  /* ── NAV ── */
+  function showPage(id, btn) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    btn.classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  /* ── OPS DATA ── */
+  const OPS_DATA = [
+    {buque:'Hamburg Express', puerto:'Valparaíso', tipo:'Atraque', inicio:'06:42', duracion:'1h 18m', tugs:3, bp:'75+75+60 t', piloto:'García, R.', estado:'Completada', capitan:'Müller, K.'},
+    {buque:'Colombo Express', puerto:'San Antonio', tipo:'Zarpe',  inicio:'09:15', duracion:'52 min',  tugs:2, bp:'82+68 t',    piloto:'Torres, M.', estado:'Completada', capitan:'Schmidt, H.'},
+    {buque:'Berlin Express',  puerto:'Valparaíso', tipo:'Atraque', inicio:'13:30', duracion:'En curso', tugs:3, bp:'75+75+70 t', piloto:'Vargas, P.', estado:'En curso',   capitan:'Weber, J.'},
+    {buque:'Frankfurt Express',puerto:'Coronel',   tipo:'Zarpe',  inicio:'18:00', duracion:'—',        tugs:2, bp:'68+60 t',    piloto:'—',          estado:'Programada', capitan:'Fischer, T.'},
+    {buque:'Gothenburg Express',puerto:'San Antonio',tipo:'Atraque',inicio:'21:30',duracion:'—',       tugs:3, bp:'82+75+68 t', piloto:'—',          estado:'Programada', capitan:'Bauer, S.'}
+  ];
+
+  let opsSortKey = '', opsSortDir = 1;
+  let opsPortFilter = '', opsStateFilter = '';
+
+  function chipPort(btn, val) {
+    document.querySelectorAll('#portChips .chip').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    opsPortFilter = val;
+    renderOpsTable();
+  }
+  function chipState(btn, val) {
+    document.querySelectorAll('#stateChips .chip').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    opsStateFilter = val;
+    renderOpsTable();
+  }
+  function sortOps(key) {
+    if (opsSortKey === key) opsSortDir *= -1; else { opsSortKey = key; opsSortDir = 1; }
+    renderOpsTable();
+  }
+
+  function badgeEstado(e) {
+    if (e === 'Completada') return '<span class="badge b-green">Completada</span>';
+    if (e === 'En curso')   return '<span class="badge b-blue">En curso</span>';
+    return '<span class="badge b-amber">Programada</span>';
+  }
+  function badgeTipo(t) {
+    const cls = t === 'Atraque' ? 'op-atraque' : 'op-zarpe';
+    return `<span class="op-badge ${cls}">${t}</span>`;
+  }
+
+  function renderOpsTable() {
+    const q  = document.getElementById('opsSearch').value.toLowerCase();
+    const tp = document.getElementById('opsTipo').value;
+    const st = document.getElementById('opsEstado').value;
+
+    let rows = OPS_DATA.filter(r => {
+      if (opsPortFilter  && r.puerto !== opsPortFilter)  return false;
+      if (opsStateFilter && r.estado !== opsStateFilter) return false;
+      if (tp && r.tipo   !== tp)   return false;
+      if (st && r.estado !== st)   return false;
+      if (q  && !r.buque.toLowerCase().includes(q) && !r.puerto.toLowerCase().includes(q)) return false;
+      return true;
+    });
+
+    if (opsSortKey) {
+      rows.sort((a, b) => a[opsSortKey] > b[opsSortKey] ? opsSortDir : -opsSortDir);
+    }
+
+    document.getElementById('opsCount').textContent = rows.length + ' maniobra' + (rows.length !== 1 ? 's' : '');
+    document.getElementById('opsTableBody').innerHTML = rows.map(r => `
+      <tr>
+        <td><div class="ship-cell">
+          <div class="ship-ico"><i class="ti ti-ship"></i></div>
+          <span class="cell-bold">${r.buque}</span>
+        </div></td>
+        <td>${r.puerto}</td>
+        <td>${badgeTipo(r.tipo)}</td>
+        <td class="cell-mono">${r.inicio}</td>
+        <td class="cell-mono">${r.duracion}</td>
+        <td style="text-align:center">${r.tugs}</td>
+        <td class="cell-mono">${r.bp}</td>
+        <td>${r.piloto}</td>
+        <td>${badgeEstado(r.estado)}</td>
+        <td class="cell-secondary">${r.capitan}</td>
+      </tr>`).join('');
+  }
+
+  function exportCSV() {
+    const header = 'Buque,Puerto,Tipo,Inicio,Duración,Tugs,Bollard pull,Piloto,Estado,Capitán\n';
+    const rows = OPS_DATA.map(r =>
+      `"${r.buque}","${r.puerto}","${r.tipo}","${r.inicio}","${r.duracion}",${r.tugs},"${r.bp}","${r.piloto}","${r.estado}","${r.capitan}"`
+    ).join('\n');
+    const blob = new Blob([header + rows], { type: 'text/csv' });
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+    a.download = 'maniobras-hapag-12may26.csv'; a.click();
+  }
+
+  renderOpsTable();
+</script>
+</body>
+</html>
