@@ -1071,126 +1071,151 @@
 </div>
 
   <!-- ═══ FACTURACIÓN ═══ -->
-  <div class="page" id="fin">
-    <div class="page-header">
+<div class="page" id="fin">
+
+  <!-- HEADER -->
+  <div class="page-header billing-hero">
+    <div class="billing-hero-overlay"></div>
+    <div class="billing-hero-content">
       <div>
-        <div class="page-title">Facturación</div>
-        <div class="page-sub">Historial, desglose y estado de pagos por puerto</div>
+        <div class="page-title">Facturación y pagos</div>
+        <div class="page-sub">
+          Estado financiero, facturas y pagos asociados a operaciones de remolque
+        </div>
+        <!-- Billing Status -->
+        <div class="billing-status-row">
+
+          <div class="billing-status-pill success">
+            <i class="ti ti-circle-check"></i>
+            Cuenta operativa activa
+          </div>
+          <div class="billing-status-pill warn">
+            <i class="ti ti-alert-circle"></i>
+            2 facturas pendientes
+          </div>
+
+        </div>
       </div>
       <div class="header-actions">
-        <button class="btn"><i class="ti ti-file-export"></i> Exportar todo</button>
-      </div>
-    </div>
+        <button class="btn">
+          <i class="ti ti-file-export"></i>
+          Exportar estado
+        </button>
 
-    <div class="metric-grid">
-      <div class="metric-card">
-        <div class="metric-label">Facturado 2026 YTD</div>
-        <div class="metric-value">$482K</div>
-        <div class="metric-sub">USD acumulado</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-label">Pendiente de pago</div>
-        <div class="metric-value c-red">$63K</div>
-        <div class="metric-sub c-red">2 facturas — 1 vencida</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-label">Uso contrato Chile</div>
-        <div class="metric-value c-green">78%</div>
-        <div class="metric-sub c-green">Dentro del volumen pactado</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-label">FSCH aplicado Q1–Q2</div>
-        <div class="metric-value">$18.4K</div>
-        <div class="metric-sub">Combustible Chile + Perú</div>
-      </div>
-    </div>
+        <button class="btn btn-pay">
+          <i class="ti ti-credit-card"></i>
+          Gestionar pago
+        </button>
 
-    <div class="two-col">
-      <div class="card">
-        <div class="card-header">
-          <span class="card-title"><i class="ti ti-file-invoice"></i>Desglose por concepto — mayo 2026</span>
-        </div>
-        <div class="card-body">
-          <div class="fact-list">
-            <div class="fact-row"><span class="fact-label">Tarifa base maniobras (147 man.)</span><span class="fact-val">$38,200</span></div>
-            <div class="fact-row"><span class="fact-label" style="color:var(--warn)">Cargo espera &gt;30 min (6 casos)</span><span class="fact-val c-amber">$2,800</span></div>
-            <div class="fact-row"><span class="fact-label">FSCH — Combustible (+9.4%)</span><span class="fact-val">$4,100</span></div>
-            <div class="fact-row"><span class="fact-label">Asistencia nocturna (+20%)</span><span class="fact-val">$3,600</span></div>
-            <div class="fact-row"><span class="fact-label">Remolcador adicional (3 casos)</span><span class="fact-val">$1,800</span></div>
-          </div>
-          <div class="fact-total"><span>Total mayo 2026</span><span>$50,500</span></div>
-        </div>
       </div>
-      <div class="card">
-        <div class="card-header">
-          <span class="card-title"><i class="ti ti-chart-line"></i>Proyección mensual 2026</span>
-        </div>
-        <div class="card-body">
-          <div class="forecast-row"><span class="fc-month">Ene</span><div class="fc-bar"><div class="fc-fill" style="width:70%;background:var(--info)"></div></div><span class="fc-val c-blue">$44,200</span></div>
-          <div class="forecast-row"><span class="fc-month">Feb</span><div class="fc-bar"><div class="fc-fill" style="width:60%;background:var(--info)"></div></div><span class="fc-val c-blue">$38,100</span></div>
-          <div class="forecast-row"><span class="fc-month">Mar</span><div class="fc-bar"><div class="fc-fill" style="width:83%;background:var(--info)"></div></div><span class="fc-val c-blue">$52,300</span></div>
-          <div class="forecast-row"><span class="fc-month">Abr</span><div class="fc-bar"><div class="fc-fill" style="width:75%;background:var(--info)"></div></div><span class="fc-val c-blue">$47,500</span></div>
-          <div class="forecast-row"><span class="fc-month">May</span><div class="fc-bar"><div class="fc-fill" style="width:80%;background:var(--info)"></div></div><span class="fc-val c-blue">$50,500</span></div>
-          <div class="forecast-row"><span class="fc-month">Jun (est)</span><div class="fc-bar"><div class="fc-fill" style="width:78%;background:#b5d4f4"></div></div><span class="fc-val cell-secondary">~$49K</span></div>
-        </div>
-      </div>
-    </div>
 
-    <div class="card">
-      <div class="card-header">
-        <span class="card-title"><i class="ti ti-receipt"></i>Facturas — estado y descarga</span>
-        <div class="card-actions">
-          <select style="height:26px;font-size:11px;padding:0 8px;border:1px solid var(--border-md);border-radius:4px;font-family:var(--font);background:var(--surface);color:var(--text2)">
-            <option>Todos los estados</option>
-            <option>Pendiente</option>
-            <option>Vencida</option>
-            <option>Pagada</option>
-          </select>
-        </div>
-      </div>
-      <div class="card-body" style="overflow-x:auto">
-        <table class="data-table">
-          <thead>
-            <tr>
-              <th>N° Factura</th><th>Puerto</th><th>Período</th><th>Maniobras</th>
-              <th>Base</th><th>FSCH</th><th>Total</th><th>Vencimiento</th><th>Estado</th><th>PDF</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td class="cell-bold cell-mono">SAM-2026-0341</td><td>Valparaíso</td><td>Abr 2026</td>
-              <td style="text-align:center">43</td><td class="cell-mono">$24,100</td><td class="cell-mono">$1,800</td>
-              <td class="cell-bold cell-mono">$28,450</td><td class="cell-mono" style="color:var(--danger)">15-may-26</td>
-              <td><span class="badge b-red">Vencida</span></td>
-              <td><a href="#" class="icon-link"><i class="ti ti-download"></i></a></td>
-            </tr>
-            <tr>
-              <td class="cell-bold cell-mono">SAM-2026-0298</td><td>San Antonio</td><td>Abr 2026</td>
-              <td style="text-align:center">51</td><td class="cell-mono">$30,200</td><td class="cell-mono">$2,300</td>
-              <td class="cell-bold cell-mono">$34,800</td><td class="cell-mono">30-may-26</td>
-              <td><span class="badge b-amber">Pendiente</span></td>
-              <td><a href="#" class="icon-link"><i class="ti ti-download"></i></a></td>
-            </tr>
-            <tr>
-              <td class="cell-bold cell-mono">SAM-2026-0251</td><td>Coronel</td><td>Mar 2026</td>
-              <td style="text-align:center">29</td><td class="cell-mono">$16,500</td><td class="cell-mono">$1,100</td>
-              <td class="cell-bold cell-mono">$19,200</td><td class="cell-mono">14-abr-26</td>
-              <td><span class="badge b-green">Pagada</span></td>
-              <td><a href="#" class="icon-link"><i class="ti ti-download"></i></a></td>
-            </tr>
-            <tr>
-              <td class="cell-bold cell-mono">SAM-2026-0201</td><td>Iquique</td><td>Mar 2026</td>
-              <td style="text-align:center">13</td><td class="cell-mono">$10,800</td><td class="cell-mono">$820</td>
-              <td class="cell-bold cell-mono">$12,700</td><td class="cell-mono">31-mar-26</td>
-              <td><span class="badge b-green">Pagada</span></td>
-              <td><a href="#" class="icon-link"><i class="ti ti-download"></i></a></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
     </div>
   </div>
 
+  <!-- KPI ROW -->
+  <div class="metric-grid">
+
+    <div class="metric-card featured-fin">
+
+      <div class="metric-label">
+        Facturado 2026 YTD
+      </div>
+
+      <div class="metric-value">
+        $482K
+      </div>
+
+      <div class="metric-sub">
+        USD acumulado
+      </div>
+
+    </div>
+
+    <div class="metric-card">
+
+      <div class="metric-label">
+        Pendiente de pago
+      </div>
+
+      <div class="metric-value c-red">
+        $63K
+      </div>
+
+      <div class="metric-sub c-red">
+        2 facturas — 1 vencida
+      </div>
+
+    </div>
+
+    <div class="metric-card">
+
+      <div class="metric-label">
+        Próximo vencimiento
+      </div>
+
+      <div class="metric-value">
+        15 May
+      </div>
+
+      <div class="metric-sub">
+        Factura SAM-2026-0341
+      </div>
+
+    </div>
+
+    <div class="metric-card">
+
+      <div class="metric-label">
+        Estado cuenta
+      </div>
+
+      <div class="metric-value c-green">
+        Activa
+      </div>
+
+      <div class="metric-sub c-green">
+        Servicios operativos habilitados
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- QUICK ACTIONS -->
+  <div class="billing-actions-card">
+
+    <div class="billing-actions-left">
+
+      <div class="billing-actions-title">
+        Acciones rápidas
+      </div>
+
+      <div class="billing-actions-sub">
+        Gestión financiera y documentación
+      </div>
+
+    </div>
+
+    <div class="billing-actions-row">
+
+      <button class="btn">
+        <i class="ti ti-download"></i>
+        Descargar estado
+      </button>
+
+      <button class="btn">
+        <i class="ti ti-file-invoice"></i>
+        Ver facturas
+      </button>
+
+      <button class="btn btn-pay">
+        <i class="ti ti-credit-card"></i>
+        Pagar ahora
+      </button>
+
+    </div>
+
+  </div>
   <!-- ═══ DESEMPEÑO ═══ -->
   <div class="page" id="kpi">
     <div class="page-header">
